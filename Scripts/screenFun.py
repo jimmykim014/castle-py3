@@ -22,6 +22,26 @@ import scipy.stats
 import sys
 import random
 import re
+import decimal
+
+
+###############################################################################
+# Rounds like Python 2: exact halves round away from zero, where Python 3's
+# round() would round them to the even neighbor
+
+def roundHalfAway(x, digits=0):
+    '''
+    Rounds x to the given number of decimal digits, with ties rounded away
+    from zero. Returns a float, as Python 2's round() did.
+    '''
+    # Python 2 returned nan and infinity unchanged
+    if math.isnan(x) or math.isinf(x):
+        return float(x)
+
+    # The exact binary value of x is rounded, so only true halves are ties
+    context = decimal.Context(prec=100, rounding=decimal.ROUND_HALF_UP)
+    exact = decimal.Decimal(float(x))
+    return float(exact.quantize(decimal.Decimal(1).scaleb(-digits), context=context))
 
 
 ###############################################################################
@@ -40,7 +60,7 @@ def sigDig(x, num=3):
         order_of_magnitude = int(math.floor(math.log10(abs(x))))
         digits = (num - 1) - order_of_magnitude
 
-    return round(x, digits)
+    return roundHalfAway(x, digits)
 
 
 #########################################################################
@@ -762,7 +782,7 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
 
     #
     gene_rhos_int, gene_span_int = intefy(gene_rhos, gene_span, scale)
-    step_scaled = int(round(I_step * (10 ** scale)))
+    step_scaled = int(roundHalfAway(I_step * (10 ** scale)))
     back_rhos_calc = precalculateGrid(gene_span_int, back_rhos, scale)
 
     # Single core version
@@ -1081,7 +1101,7 @@ def intefy(gene_rhos, gene_span, scale):
 
         for rho in rhos:
 
-            rho_int = int(round(magnitude * rho))
+            rho_int = int(roundHalfAway(magnitude * rho))
             rhos_int.append(rho_int)
 
         gene_rhos_int[gene] = rhos_int
@@ -1089,7 +1109,7 @@ def intefy(gene_rhos, gene_span, scale):
     for gene, span in gene_span.items():
         min_I, max_I = span
 
-        span_int = (int(round(magnitude * min_I)), int(round(magnitude * max_I)))
+        span_int = (int(roundHalfAway(magnitude * min_I)), int(roundHalfAway(magnitude * max_I)))
 
         gene_span_int[gene] = span_int
 
