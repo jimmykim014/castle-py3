@@ -15,6 +15,7 @@ import math
 import csv
 from collections import defaultdict
 import os
+import multiprocessing
 import scipy.special
 import scipy.stats as st
 import scipy.stats
@@ -764,34 +765,12 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
     step_scaled = int(round(I_step * (10 ** scale)))
     back_rhos_calc = precalculateGrid(gene_span_int, back_rhos, scale)
 
-    # Checks if single processor
-    if nums == 1:
-        single = True
-    else:
-        single = False
-
-    # Checks and creates parallel environment
-    try:
-        if not single:
-            import pp
-
-    except ImportError:
-        print('Parallel Python package pp not found. Defaulting to single core')
-        single = True
-
-    if not single:
-
-        # Initiates parallel server
-        job_server = pp.Server(nums)
-        fn = pp.Template(job_server, trial, (likeGrid, findInterval,),
-                ("numpy", "math", "scipy.special"))
-
     # Single core version
-    if single:
+    if nums == 1:
         geneI, geneL, geneInterval, geneDist = trial(gene_rhos_int, back_rhos_calc, gene_span_int, step_scaled)
 
     # Parallel version
-    if not single:
+    else:
 
         geneI = {}
         geneL = {}
@@ -799,7 +778,7 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
         geneDist = {}
 
         GeneRhosSplit = []
-        keys = gene_rhos_int.keys()
+        keys = list(gene_rhos_int.keys())
 
 	# Determines the number of genes in each task
         n = int(len(keys) / nums) + 1
@@ -814,27 +793,34 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
 
             GeneRhosSplit.append(dictChunk)
 
-	# Submits individual jobs for each gene list
-        jobs = []
-        for splits in GeneRhosSplit:
-            jobs.append(fn.submit(splits, back_rhos_calc, gene_span_int, step_scaled))
+	# Submits individual jobs for each gene list to a pool of processes
+        pool = multiprocessing.Pool(nums)
 
-	# Retrieves results from individual jobs
-        for job in jobs:
-            val = job()
+        try:
+            jobs = []
+            for splits in GeneRhosSplit:
+                jobs.append(pool.apply_async(trial,
+                        (splits, back_rhos_calc, gene_span_int, step_scaled)))
 
-            try:
-                geneIi, geneLi, geneIntervali, geneDisti = val
+	    # Retrieves results from individual jobs
+            for job in jobs:
 
-            # Catches subprocess errors
-            except TypeError:
-                sys.exit('Subprocess failed')
+                try:
+                    geneIi, geneLi, geneIntervali, geneDisti = job.get()
 
-            # Saves results
-            geneI.update(geneIi)
-            geneL.update(geneLi)
-            geneInterval.update(geneIntervali)
-            geneDist.update(geneDisti)
+                # Catches subprocess errors
+                except Exception as e:
+                    sys.exit('Subprocess failed: ' + str(e))
+
+                # Saves results
+                geneI.update(geneIi)
+                geneL.update(geneLi)
+                geneInterval.update(geneIntervali)
+                geneDist.update(geneDisti)
+
+        finally:
+            pool.close()
+            pool.join()
 
     return geneI, geneL, geneInterval, geneDist
 
