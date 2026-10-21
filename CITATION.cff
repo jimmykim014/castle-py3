@@ -4,6 +4,7 @@ message: >-
   Morgens et al. (2016), listed under references.
 title: "castle-py3: casTLE for Python 3"
 type: software
+doi: 10.5281/zenodo.23548289
 authors:
   - family-names: Kim
     given-names: Jimmy
