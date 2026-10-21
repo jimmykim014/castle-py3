@@ -10,158 +10,159 @@ import argparse
 from screenFun import *
 import sys
 
+# Only runs when called as a script, so parallel workers can import it safely
+if __name__ == '__main__':
+    ###############################################################################    
+    # Version number
 
-###############################################################################    
-# Version number
-
-current_version = '1.0'
-
-
-###############################################################################    
-
-# Parses input using argparse module
-
-# Initiates input parser
-parser = argparse.ArgumentParser(description='Adds permutations for pvalues')
-
-# Non-optional arguments: The results file and the number of permutations
-parser.add_argument('res_file', help='Results file', type=str)
-
-parser.add_argument('perm_num', help='Number of permutations', type=int)
-
-# Optional arguments
-parser.add_argument('-p', '--proccessors', dest='nums',
-                help='Number of prcessors to use', type=int,
-                default=20)
-
-parser.add_argument('-e', '--erase', action='store_true',
-		help='Don\t keep previous permutations')
-
-parser.add_argument('-t', '--out_time', action='store_true',
-		help='Output timestamps.')
-
-parser.add_argument('-r', '--ratio_col', default=8, type=int,
-                        help='Column containing ratio scores')
-
-parser.add_argument('-m', '--mouse', action='store_true',
-                        help='Uses mouse gene information.')
-
-# Saves all input to object args
-args = parser.parse_args()
+    current_version = '1.0'
 
 
-###############################################################################
-# Finds records
+    ###############################################################################    
 
-print('Retrieving records')
+    # Parses input using argparse module
 
-stats, files, info, param = retrieveRecord(args.res_file, current_version)
+    # Initiates input parser
+    parser = argparse.ArgumentParser(description='Adds permutations for pvalues')
 
-unt_file, trt_file, zero_files, file_out = files
-screen_type, neg_name, split_mark, exclude = info
-thresh, K, back, I_step, scale, draw_num = param
+    # Non-optional arguments: The results file and the number of permutations
+    parser.add_argument('res_file', help='Results file', type=str)
 
-print('Drawing ' + str(draw_num) + ' random elements')
+    parser.add_argument('perm_num', help='Number of permutations', type=int)
 
+    # Optional arguments
+    parser.add_argument('-p', '--proccessors', dest='nums',
+                    help='Number of prcessors to use', type=int,
+                    default=20)
 
-###############################################################################
-# Pulls in gene info, IDs, as well as GO terms
+    parser.add_argument('-e', '--erase', action='store_true',
+                    help='Don\t keep previous permutations')
 
-print('Retrieving gene information')
+    parser.add_argument('-t', '--out_time', action='store_true',
+                    help='Output timestamps.')
 
-# Uses different genetic information depending whether a human or mouse screen
-geneID2Name, geneID2Info, geneName2ID, geneEns2Name = retrieveInfo(mouse=args.mouse)
+    parser.add_argument('-r', '--ratio_col', default=8, type=int,
+                            help='Column containing ratio scores')
 
-# Retrieves GO information
-geneID2Comp, geneID2Proc, geneID2Fun = retrieveGO()
+    parser.add_argument('-m', '--mouse', action='store_true',
+                            help='Uses mouse gene information.')
 
-
-###############################################################################
-# Pulls in untreated and treated counts, and filters by defined threshold
-
-print('Filtering reads')
-
-# Retreives filtered counts for auxilary function
-untreated, treated, stats, time_zero = filterCounts(unt_file,
-                                                trt_file, thresh,
-                                                zero_files, exclude)
+    # Saves all input to object args
+    args = parser.parse_args()
 
 
-###############################################################################
-# Calculates enrichment values
+    ###############################################################################
+    # Finds records
 
-print('Calculating enrichment values')
+    print('Retrieving records')
 
-element_rhos, gene_rhos, neg_rhos, tar_rhos, gene_ref = enrich_all(untreated,
-		treated, neg_name, split_mark, K, time_zero, back)
+    stats, files, info, param = retrieveRecord(args.res_file, current_version)
 
-# Chooses appropriate background from record file
-if back == 'all':
-    back_rhos = neg_rhos + tar_rhos
-elif back == 'neg':
-    back_rhos = neg_rhos
-elif back == 'tar':
-    back_rhos = tar_rhos
-else:
-    sys.exit('Unrecognized background option')
+    unt_file, trt_file, zero_files, file_out = files
+    screen_type, neg_name, split_mark, exclude = info
+    thresh, K, back, I_step, scale, draw_num = param
+
+    print('Drawing ' + str(draw_num) + ' random elements')
 
 
-###############################################################################
-# Calculates null distribution of ratio statistic
+    ###############################################################################
+    # Pulls in gene info, IDs, as well as GO terms
 
-print('Running permutations')
+    print('Retrieving gene information')
 
-if args.out_time:
-    print time.strftime("%d:%H:%M:%S")
+    # Uses different genetic information depending whether a human or mouse screen
+    geneID2Name, geneID2Info, geneName2ID, geneEns2Name = retrieveInfo(mouse=args.mouse)
 
-# Retrieves pvalues from auxilary function
-permI, permL, permInterval = retrievePerm(draw_num, args.perm_num, back_rhos,
-                                                tar_rhos, args.nums, scale, I_step)
-
-if args.out_time:
-    print time.strftime("%d:%H:%M:%S")
+    # Retrieves GO information
+    geneID2Comp, geneID2Proc, geneID2Fun = retrieveGO()
 
 
-###############################################################################
-# Access previously calculate ratios and permutations
+    ###############################################################################
+    # Pulls in untreated and treated counts, and filters by defined threshold
 
-gene2line, geneP, header, all_perm_num = calculatePval(args.res_file, permI, permL,
-                                        args.erase, args.ratio_col)
+    print('Filtering reads')
 
-print('Permutations used: ' + all_perm_num)
-
-
-###############################################################################
-# Writes output in human readable format
-
-print('Outputing file')
-
-with open(args.res_file, 'w') as out_open:
-    out_csv = csv.writer(out_open, delimiter=',', lineterminator='\n')
-
-    # Writes a header
-    out_csv.writerow(header)
-
-    for geneID in gene2line:
-
-        line = gene2line[geneID]
-        line[args.ratio_col + 1] = sigDig(geneP[geneID])
-
-        # Writes to file
-        out_csv.writerow(line)
+    # Retreives filtered counts for auxilary function
+    untreated, treated, stats, time_zero = filterCounts(unt_file,
+                                                    trt_file, thresh,
+                                                    zero_files, exclude)
 
 
-###############################################################################
-# Appends note to existing record
+    ###############################################################################
+    # Calculates enrichment values
 
-name = args.res_file[: -4]
-rec_file = name + '_record.txt'
+    print('Calculating enrichment values')
 
-with open(rec_file, 'a') as rec_open:
-    rec_csv = csv.writer(rec_open, delimiter='\t')
-    rec_csv.writerow(['addPermutations.py', current_version])
-    rec_csv.writerow(['Date', time.strftime("%d:%m:%Y")])
-    rec_csv.writerow(['Number of permutations', all_perm_num])
+    element_rhos, gene_rhos, neg_rhos, tar_rhos, gene_ref = enrich_all(untreated,
+                    treated, neg_name, split_mark, K, time_zero, back)
+
+    # Chooses appropriate background from record file
+    if back == 'all':
+        back_rhos = neg_rhos + tar_rhos
+    elif back == 'neg':
+        back_rhos = neg_rhos
+    elif back == 'tar':
+        back_rhos = tar_rhos
+    else:
+        sys.exit('Unrecognized background option')
 
 
-###############################################################################
+    ###############################################################################
+    # Calculates null distribution of ratio statistic
+
+    print('Running permutations')
+
+    if args.out_time:
+        print(time.strftime("%d:%H:%M:%S"))
+
+    # Retrieves pvalues from auxilary function
+    permI, permL, permInterval = retrievePerm(draw_num, args.perm_num, back_rhos,
+                                                    tar_rhos, args.nums, scale, I_step)
+
+    if args.out_time:
+        print(time.strftime("%d:%H:%M:%S"))
+
+
+    ###############################################################################
+    # Access previously calculate ratios and permutations
+
+    gene2line, geneP, header, all_perm_num = calculatePval(args.res_file, permI, permL,
+                                            args.erase, args.ratio_col)
+
+    print('Permutations used: ' + all_perm_num)
+
+
+    ###############################################################################
+    # Writes output in human readable format
+
+    print('Outputing file')
+
+    with open(args.res_file, 'w') as out_open:
+        out_csv = csv.writer(out_open, delimiter=',', lineterminator='\n')
+
+        # Writes a header
+        out_csv.writerow(header)
+
+        for geneID in gene2line:
+
+            line = gene2line[geneID]
+            line[args.ratio_col + 1] = sigDig(geneP[geneID])
+
+            # Writes to file
+            out_csv.writerow(line)
+
+
+    ###############################################################################
+    # Appends note to existing record
+
+    name = args.res_file[: -4]
+    rec_file = name + '_record.txt'
+
+    with open(rec_file, 'a') as rec_open:
+        rec_csv = csv.writer(rec_open, delimiter='\t')
+        rec_csv.writerow(['addPermutations.py', current_version])
+        rec_csv.writerow(['Date', time.strftime("%d:%m:%Y")])
+        rec_csv.writerow(['Number of permutations', all_perm_num])
+
+
+    ###############################################################################

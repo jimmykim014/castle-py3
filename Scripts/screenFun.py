@@ -98,7 +98,7 @@ def retrieveInfo(ref_base='GenRef', mouse=False):
         with open(org_file_mouse, 'r') as org_open:
 
             org_csv = csv.reader(org_open, delimiter='\t')
-            org_csv.next()  # Skips header
+            next(org_csv)  # Skips header
 
             for line in org_csv:
                 # Entrez
@@ -116,7 +116,7 @@ def retrieveInfo(ref_base='GenRef', mouse=False):
             with open(org_file_human, 'r') as org_open:
 
                 org_csv = csv.reader(org_open, delimiter='\t')
-                org_csv.next()  # Skips header
+                next(org_csv)  # Skips header
 
                 # For each line in file, save that gene information
                 for line in org_csv:
@@ -199,7 +199,7 @@ def timeZero(zero_files, thresh):
         zero_unt_file, zero_trt_file = zero_files
 
     # Reads and filters in time zero untreated file
-    with open(zero_unt_file, 'rU') as zero_unt_open:
+    with open(zero_unt_file, 'r') as zero_unt_open:
 
         dialect = csv.Sniffer().sniff(zero_unt_open.read(1024), delimiters='\t ,')
         zero_unt_csv = csv.reader(zero_unt_open, dialect)
@@ -214,7 +214,7 @@ def timeZero(zero_files, thresh):
                 zero_unt[line[0]] = thresh
 
     # Reads and filters in time zero treated file
-    with open(zero_trt_file, 'rU') as zero_trt_open:
+    with open(zero_trt_file, 'r') as zero_trt_open:
 
         dialect = csv.Sniffer().sniff(zero_trt_open.read(1024), delimiters='\t ,')
         zero_trt_csv = csv.reader(zero_trt_open, dialect)
@@ -249,7 +249,7 @@ def filterCounts(unt_file, trt_file, thresh, zero_files, exclude=False):
     untreated_raw = {}
     treated_raw = {}
 
-    with open(unt_file, 'rU') as unt_open:
+    with open(unt_file, 'r') as unt_open:
 
         dialect = csv.Sniffer().sniff(unt_open.read(1024), delimiters='\t ,')
         unt_open.seek(0)
@@ -274,7 +274,7 @@ def filterCounts(unt_file, trt_file, thresh, zero_files, exclude=False):
                         break
 
     # Stores treated counts as dictionary of name to count
-    with open(trt_file, 'rU') as trt_open:
+    with open(trt_file, 'r') as trt_open:
 
         dialect = csv.Sniffer().sniff(trt_open.read(1024), delimiters='\t ,')
         trt_open.seek(0)
@@ -321,7 +321,7 @@ def filterCounts(unt_file, trt_file, thresh, zero_files, exclude=False):
         # Checks if over threshold in untreated sample
         if untreated_raw[entry] < thresh:
             un = 1
-	    belowUnt += 1
+            belowUnt += 1
 
         # Checks if over threshold in treated sample
         if entry not in treated_raw or treated_raw[entry] < thresh:
@@ -603,7 +603,7 @@ def findInterval(log_data, target, step):
         if total_weight >= target:
             break
 
-	# Checks it has not reached the edge
+        # Checks it has not reached the edge
         if min_ind == 0:
             left_edge = True
         else:
@@ -620,7 +620,7 @@ def findInterval(log_data, target, step):
             if numpy.isnan(right):
                 right_edge = True
 
-	# If it gets stuck, error out
+        # If it gets stuck, error out
         if right_edge and left_edge:
             print(str(steps))
             sys.exit('Error: Interval calculation failure')
@@ -633,7 +633,7 @@ def findInterval(log_data, target, step):
             total_weight += right
             max_ind += step
 
-	# Picks the larger of the neighboring likelihoods
+        # Picks the larger of the neighboring likelihoods
         elif left >= right:
             total_weight += left
             min_ind -= step
@@ -686,10 +686,10 @@ def trial(gene_rhos, back_dist, gene_span, step):
         buff_zero = 10 ** 3
 
         marg_logs = numpy.zeros(max_I - min_I + buff_zero * 2) - 1000
-        marg_logs[:] = numpy.NAN
+        marg_logs[:] = numpy.nan
         marg_logs[-1 * min_I + buff_zero] = like0
 
-	# Grid search across the positive values
+        # Grid search across the positive values
         for I in range(step, max_I + step, step):
 
             # Determines effect size
@@ -705,11 +705,11 @@ def trial(gene_rhos, back_dist, gene_span, step):
             # Saves raw likelihoods for additional analysis
             all_dist[I] = dist
 
-	    # Performs marginalization in log scale for stability
+            # Performs marginalization in log scale for stability
             marg_log = scipy.special.logsumexp(dist) - math.log(len(dist))
             marg_logs[I - min_I + buff_zero] = marg_log
 
-	# Grid search across the negative values
+        # Grid search across the negative values
         I = 0
 
         for I in range(-1 * step, min_I - step, -1 * step):
@@ -727,7 +727,7 @@ def trial(gene_rhos, back_dist, gene_span, step):
             # Saves raw likelihoods for additional analysis
             all_dist[I] = dist
 
-	    # Performs marginalization in log scale for stability
+            # Performs marginalization in log scale for stability
             marg_log = scipy.special.logsumexp(dist) - math.log(len(dist))
             marg_logs[I - min_I + buff_zero] = marg_log
 
@@ -742,7 +742,7 @@ def trial(gene_rhos, back_dist, gene_span, step):
         geneI[gene] = maxI
 
         # Calculates log-likelihood ratio
-	geneL[gene] = 2 * (maxL - like0)
+        geneL[gene] = 2 * (maxL - like0)
         geneInterval[gene] = (min_ind + min_I - buff_zero,
                                 max_ind + min_I - buff_zero, total_weight)
 
@@ -780,7 +780,7 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
         GeneRhosSplit = []
         keys = list(gene_rhos_int.keys())
 
-	# Determines the number of genes in each task
+        # Determines the number of genes in each task
         n = int(len(keys) / nums) + 1
         keysSplit = [keys[i: i + n] for i in range(0, len(keys), n)]
 
@@ -793,7 +793,7 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
 
             GeneRhosSplit.append(dictChunk)
 
-	# Submits individual jobs for each gene list to a pool of processes
+        # Submits individual jobs for each gene list to a pool of processes
         pool = multiprocessing.Pool(nums)
 
         try:
@@ -802,7 +802,7 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
                 jobs.append(pool.apply_async(trial,
                         (splits, back_rhos_calc, gene_span_int, step_scaled)))
 
-	    # Retrieves results from individual jobs
+            # Retrieves results from individual jobs
             for job in jobs:
 
                 try:
@@ -942,7 +942,7 @@ def retrieveCombo(data1, data2, gene_span, I_step):
             marg_log = scipy.special.logsumexp(dist) - math.log(len(dist))
             marg_logs.append(marg_log)
 
-	# Retrieves the 95% confidence interval
+        # Retrieves the 95% confidence interval
         total_weight, min_ind, max_ind = findInterval(numpy.asarray(marg_logs), 0.95, 1)
 
         # Finds maximum likelihood
@@ -1143,7 +1143,7 @@ def retrieveRecord(res_file, current_version):
         # Parses record file
         with open(rec_file, 'r') as rec_open:
             rec_csv = csv.reader(rec_open, delimiter='\t')
-            script, version = rec_csv.next()
+            script, version = next(rec_csv)
 
             if version != current_version:
                 sys.exit('Error: Version number not current\n'
@@ -1152,25 +1152,25 @@ def retrieveRecord(res_file, current_version):
             if script != 'analyzeCounts.py':
                 sys.exit('Error: Input is not a result file')
 
-            last_time = rec_csv.next()[1]
-            unt_file = rec_csv.next()[1]
-            trt_file = rec_csv.next()[1]
-            zero_files = rec_csv.next()[1]
+            last_time = next(rec_csv)[1]
+            unt_file = next(rec_csv)[1]
+            trt_file = next(rec_csv)[1]
+            zero_files = next(rec_csv)[1]
             if zero_files:
                 zero_files = eval(zero_files)
-            file_out = rec_csv.next()[1]
-            screen_type = rec_csv.next()[1]
-            neg_name = rec_csv.next()[1]
-            split_mark = rec_csv.next()[1]
-            exclude = rec_csv.next()[1]
+            file_out = next(rec_csv)[1]
+            screen_type = next(rec_csv)[1]
+            neg_name = next(rec_csv)[1]
+            split_mark = next(rec_csv)[1]
+            exclude = next(rec_csv)[1]
             if exclude:
                 exclude = eval(exclude)
-            thresh = int(rec_csv.next()[1])
-            K = float(rec_csv.next()[1])
-            back = rec_csv.next()[1]
-            I_step = float(rec_csv.next()[1])
-            scale = int(rec_csv.next()[1])
-            draw_num = int(rec_csv.next()[1])
+            thresh = int(next(rec_csv)[1])
+            K = float(next(rec_csv)[1])
+            back = next(rec_csv)[1]
+            I_step = float(next(rec_csv)[1])
+            scale = int(next(rec_csv)[1])
+            draw_num = int(next(rec_csv)[1])
 
     except IOError:
         sys.exit('Error: Record of result file not found\n'
@@ -1226,7 +1226,7 @@ def calculatePval(res_file, permI, permL, erase, ratio_col):
     # Reads in previously calculated ratios
     with open(res_file, 'r') as res_open:
         res_csv = csv.reader(res_open, delimiter=',', lineterminator = '\n')
-        header = res_csv.next()
+        header = next(res_csv)
         for line in res_csv:
             gene2line[line[0] + line[1]] = line
             gene2rat[line[0] + line[1]] = float(line[ratio_col])
@@ -1244,14 +1244,14 @@ def calculatePval(res_file, permI, permL, erase, ratio_col):
 def retrieveIDs(gene, geneID2Name, geneName2ID, geneEns2Name):
 
     if gene in geneID2Name:
-	geneID = gene
+        geneID = gene
         entrez = gene
-	name = geneID2Name[geneID]
+        name = geneID2Name[geneID]
 
     elif gene in geneName2ID:
-	name = gene
-	geneID = geneName2ID[gene]
-	entrez = geneName2ID[gene]
+        name = gene
+        geneID = geneName2ID[gene]
+        entrez = geneName2ID[gene]
 
     elif gene in geneEns2Name:
         name = geneEns2Name[gene]
@@ -1259,8 +1259,8 @@ def retrieveIDs(gene, geneID2Name, geneName2ID, geneEns2Name):
         entrez = geneName2ID[name]
 
     else:
-	geneID = gene
-	name = gene
+        geneID = gene
+        name = gene
         entrez = gene
 
     return geneID, name, entrez
