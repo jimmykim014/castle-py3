@@ -15,7 +15,7 @@ import math
 import csv
 from collections import defaultdict
 import os
-import multiprocessing
+import concurrent.futures
 import scipy.special
 import scipy.stats as st
 import scipy.stats
@@ -814,21 +814,20 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
             GeneRhosSplit.append(dictChunk)
 
         # Submits individual jobs for each gene list to a pool of processes
-        pool = multiprocessing.Pool(nums)
+        with concurrent.futures.ProcessPoolExecutor(max_workers=nums) as pool:
 
-        try:
             jobs = []
             for splits in GeneRhosSplit:
-                jobs.append(pool.apply_async(trial,
-                        (splits, back_rhos_calc, gene_span_int, step_scaled)))
+                jobs.append(pool.submit(trial, splits, back_rhos_calc,
+                                        gene_span_int, step_scaled))
 
             # Retrieves results from individual jobs
             for job in jobs:
 
                 try:
-                    geneIi, geneLi, geneIntervali, geneDisti = job.get()
+                    geneIi, geneLi, geneIntervali, geneDisti = job.result()
 
-                # Catches subprocess errors
+                # Catches subprocess errors, including a worker crashing
                 except Exception as e:
                     sys.exit('Subprocess failed: ' + str(e))
 
@@ -837,10 +836,6 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
                 geneL.update(geneLi)
                 geneInterval.update(geneIntervali)
                 geneDist.update(geneDisti)
-
-        finally:
-            pool.close()
-            pool.join()
 
     return geneI, geneL, geneInterval, geneDist
 
