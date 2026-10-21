@@ -261,7 +261,6 @@ interval for the Combo casTLE effect size estimate
 Count files
 Overview of making result files from count files
 Overview of combination analysis
-Known issues
 
 ###############################################################################
 # Count files
@@ -321,24 +320,6 @@ This will create a combo file at Results/<output file>.
 
 2) To estimate p-values for combination results, use addCombo.py
 python3 Scripts/addCombo.py <combo file> <number of permutations>
-
-
-###############################################################################
-# Known issues
-
-These behaviors come from the original casTLE scripts. They are kept so that
-results stay identical to the original.
-
-Time zero files (-z): when reading each time zero file, the first 1024
-characters are used to detect the delimiter and are then skipped, so the
-elements on those first lines (often several dozen) get the default time
-zero value instead of their counts. If the cut falls in the middle of a
-count, the script can stop with an IndexError. When the same file is given
-as both time zero files, the error cancels out; with two different files,
-results are affected.
-
-Exclude (-x): despite its name, -x keeps only elements whose names contain
-one of the given strings. To keep negative controls, include their symbol.
 
 
 ###############################################################################
