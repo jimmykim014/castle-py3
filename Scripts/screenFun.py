@@ -1256,6 +1256,41 @@ def calculatePval(res_file, permI, permL, erase, ratio_col):
 
 
 ###############################################################################
+# Sorts output rows
+
+def sortByGeneID(rows):
+    '''
+    Sorts output rows by gene ID, so result files come out in a predictable
+    order. Numeric IDs are sorted as numbers and come first, then any
+    non-numeric IDs (genes not found in the reference) alphabetically. Rows
+    with the same ID are ordered by symbol.
+    '''
+    def key(row):
+        gene_id, symbol = str(row[0]), str(row[1])
+        try:
+            return (0, int(gene_id), '', symbol)
+        except ValueError:
+            return (1, 0, gene_id, symbol)
+
+    return sorted(rows, key=key)
+
+
+def sortByScore(rows, score_col):
+    '''
+    Sorts output rows by casTLE score in score_col, highest first. Ties are
+    ordered by gene ID, and rows with a missing (NaN) score go last.
+    '''
+    def key(row):
+        score = float(row[score_col])
+        if math.isnan(score):
+            return (1, 0)
+        return (0, -score)
+
+    # Sorting is stable, so pre-sorting by gene ID orders the ties
+    return sorted(sortByGeneID(rows), key=key)
+
+
+###############################################################################
 # Converts IDs
 
 def retrieveIDs(gene, geneID2Name, geneName2ID, geneEns2Name):

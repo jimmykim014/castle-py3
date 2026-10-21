@@ -287,6 +287,8 @@ if __name__ == '__main__':
                             'casTLE Effect', 'casTLE Score', 'casTLE p-value',
                             'Minimum Effect Estimate', 'Maximum Effect Estimate', 'Individual Elements'])
 
+        rows = []
+
         for gene in gene_rhos:
 
             # Converts IDs as neccessary
@@ -313,9 +315,12 @@ if __name__ == '__main__':
             elements = [str(sigDig(val)) + ' : ' + element.split(args.split_mark)[-1] for val,
                         element in sorted(gene_ref[gene], key=lambda x : x[0])]
 
-            # Writes to file
-            out_csv.writerow([geneID, name, info, comp, proc, fun, num,
+            rows.append([geneID, name, info, comp, proc, fun, num,
                                     max_e, rat, pRat, min_I, max_I] + elements)
+
+        # Writes to file, sorted by casTLE score
+        for row in sortByScore(rows, 8):
+            out_csv.writerow(row)
 
 
     ###############################################################################

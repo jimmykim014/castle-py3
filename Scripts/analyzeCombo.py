@@ -209,6 +209,8 @@ if __name__ == '__main__':
                             'Combo casTLE Effect', 'Combo casTLE Score', 'casTLE p-value',
                             'Minimum Effect Estimate', 'Maximum Effect Estimate'])
 
+        rows = []
+
         for gene in gene_span:
 
             # Finds appropriate IDs
@@ -237,11 +239,14 @@ if __name__ == '__main__':
             min_CI = sigDig(geneInterval[gene][0] / (10 ** scale))
             max_CI = sigDig(geneInterval[gene][1] / (10 ** scale))
 
-            # Writes to file
-            out_csv.writerow([geneID, name, info, comp, proc, fun,
+            rows.append([geneID, name, info, comp, proc, fun,
                                     num1, effect1, rat1,
                                     num2, effect2, rat2,
                                     effect, rat, pRat, min_CI, max_CI])
+
+        # Writes to file, sorted by combo casTLE score
+        for row in sortByScore(rows, 13):
+            out_csv.writerow(row)
 
 
     ###############################################################################
