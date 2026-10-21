@@ -34,7 +34,8 @@ has changed but results should be identical.
 
 This repository (castle-py3) is a Python 3 port of casTLE version 1.0. It
 gives the same results as the original Python 2 scripts; the only change to
-output files is that genes are listed in order of gene ID. It works on count
+output files is that genes are listed from highest to lowest casTLE score. It
+works on count
 files you provide, so the alignment scripts (makeCounts.py, makeIndices.py)
 and bowtie indices of the original are not included.
 
@@ -176,8 +177,8 @@ Location: Stored in Results folder
 Format: Comma delimited.
 Record: <name>_record.txt
 
-Each row represents a single gene. Rows are sorted by GeneID: numeric IDs in
-numeric order, then any genes not found in GenRef alphabetically.
+Each row represents a single gene. Rows are sorted by "casTLE Score", highest
+first; genes with equal scores are ordered by GeneID.
 "GeneID", "Symbol", and "GeneInfo" identify the gene
 
 "Localization", "Process", and "Function" display the GO terms for that gene
@@ -208,7 +209,8 @@ Location: Stored in Results folder
 Format: Comma delimited.
 Record: <name>_record.txt
 
-Each row represents a single gene, sorted by GeneID as in result files.
+Each row represents a single gene. Rows are sorted by "Combo casTLE Score",
+highest first; genes with equal scores are ordered by GeneID.
 "GeneID", "Symbol", and "GeneInfo" identify the gene
 
 "Localization", "Process", and "Function" display the GO terms for that gene

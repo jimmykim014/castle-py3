@@ -202,7 +202,8 @@ if __name__ == '__main__':
             line = gene2line[geneID]
             line[args.ratio_col + 1] = sigDig(geneP[geneID])
 
-            # Writes to file
+        # Writes to file, sorted by combo casTLE score
+        for line in sortByScore(gene2line.values(), args.ratio_col):
             out_csv.writerow(line)
 
 
