@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 castle-py3: a version of casTLE for Python 3, ported from casTLE version 1.0.
 https://github.com/jimmykim014/castle-py3
+DOI: https://doi.org/10.5281/zenodo.23548289
 
 ###############################################################################
 
@@ -53,6 +54,10 @@ Kim et al. (2026) below.
 If you use these scripts please cite:
 Morgens DW, Deans RM, Li A, Bassik MC (2016) Systematic comparison of
 CRISPR/Cas9 and RNAi screens for essential genes. Nat. Biotechnol. advance on
+
+and this Python 3 version:
+Kim J, Morgens DW (2026) castle-py3: casTLE for Python 3. Zenodo.
+https://doi.org/10.5281/zenodo.23548289
 
 For generating count files, see:
 Kim J, Kovacs H, Wisnovsky S (2026) CRISPR screens to identify and
