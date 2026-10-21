@@ -30,8 +30,13 @@ Version 1.0
 
 Version 0.7 used in Morgens et al (2016) "Systematic comparison of CRISPR/Cas9
 and RNAi screens for essential genes." Nat Biotechnol advance on. Implementation
-has changed but results should be identical. Version 0.7 scripts available
-from Scripts/Scripts0.7
+has changed but results should be identical.
+
+This repository (castle-py3) is a Python 3 port of casTLE version 1.0. It
+gives the same results as the original Python 2 scripts; the only change to
+output files is that genes are listed in order of gene ID. It works on count
+files you provide, so the alignment scripts (makeCounts.py, makeIndices.py)
+and bowtie indices of the original are not included.
 
 If you use these scripts please cite:
 Morgens DW, Deans RM, Li A, Bassik MC (2016) Systematic comparison of
@@ -41,33 +46,30 @@ CRISPR/Cas9 and RNAi screens for essential genes. Nat. Biotechnol. advance on
 # Requirements
 ###############################################################################
 
-Scripts are written for python 2.7, though should be compatible with python 3.
-makeCount.py and makeIndices.py requires bowtie installed
+Scripts require Python 3. They are tested with Python 3.12, numpy 2.2,
+scipy 1.18 and matplotlib 3.10, and no longer run on Python 2.
 
-Required modules: numpy, math, csv, collections, os, scipy, sys, random, re,
-argparse, subprocess, shlex, time, matplotlib, warnings
+Required packages: numpy, scipy, matplotlib (matplotlib is only needed for the
+plotting scripts). Everything else used is part of the Python standard library.
 
-Optional module: pp (Parallel python), which will allow for parallel processing,
-greatly increasing the speed of computation.
+Parallel processing is built in: use -p to set the number of processes.
+The Parallel Python (pp) module is no longer needed.
 
 
 ###############################################################################
 # Installation
 ###############################################################################
 
-Option 1 for repository functionality:
-Download and install mercurial from https://www.mercurial-scm.org/
-Run command:
-hg clone https://bitbucket.org/dmorgens/castle
+Download the repository with git:
+git clone https://github.com/jimmykim014/castle-py3
 
-Option 2 for source file download:
-Go to https://bitbucket.org/dmorgens/castle/downloads
-Select "Download repository".
-Extract folder.
+Or download it as a ZIP file from https://github.com/jimmykim014/castle-py3
+and extract the folder.
 
-Python 2.7 and modules available from https://www.continuum.io/downloads
-Parallel Python module available from http://www.parallelpython.com/
-Bowtie available at http://bowtie-bio.sourceforge.net/index.shtml
+Install the required packages, for example with pip:
+pip install numpy scipy matplotlib
+or with conda:
+conda install numpy scipy matplotlib
 
 
 ###############################################################################
@@ -76,38 +78,32 @@ Bowtie available at http://bowtie-bio.sourceforge.net/index.shtml
 
 Use -h to view documentation.
 
-Make bowtie index:
-python Scripts/makeIndices.py <oligo file> <screen type> <output bowtie file>
-
-Align sequence files:
-python Scripts/makeCounts.py <file base for fastq files> <output file> <screen type>
-
 Compare two count files with casTLE:
-python Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
+python3 Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
 
 Calculate p-values for casTLE result file:
-python Scripts/addPermutations.py <results file> <number of permutations>
+python3 Scripts/addPermutations.py <results file> <number of permutations>
 
 Combine multiple casTLE result files:
-python Scripts/analyzeCombo.py <results file 1> <results file 2> <output file>
+python3 Scripts/analyzeCombo.py <results file 1> <results file 2> <output file>
 
 Calculate p-values for combination of multiple casTLE results:
-python Scripts/addCombo.py <combo file> <number of permutations>
+python3 Scripts/addCombo.py <combo file> <number of permutations>
 
 Plot distribution of elements from count file:
-python Scripts/plotDist.py <output name> <count file 1> <count file 2> ...
+python3 Scripts/Plot-Scripts/plotDist.py <output name> <count file 1> <count file 2> ...
 
 Plot casTLE result file:
-python Scripts/plotVolcano.py <results file>
+python3 Scripts/Plot-Scripts/plotVolcano.py <results file>
 
 Plot individual gene results from casTLE result file:
-python Scripts/plotGenes.py <results file> <gene name 1> <gene name 2> ...
+python3 Scripts/Plot-Scripts/plotGenes.py <results file> <gene name 1> <gene name 2> ...
 
 Compare enrichment of individual elements between multiple result files:
-python Scripts/plotElements.py <results file 1> <results file 2> <output name>
+python3 Scripts/Plot-Scripts/plotElements.py <results file 1> <results file 2> <output name>
 
 Compare effect size and confidence between multiple result files:
-python Scripts/plotRep.py <results file 1> <results file 2> <output name>
+python3 Scripts/Plot-Scripts/plotRep.py <results file 1> <results file 2> <output name>
 
 
 ###############################################################################
@@ -115,25 +111,26 @@ python Scripts/plotRep.py <results file 1> <results file 2> <output name>
 ###############################################################################
 
 For the sake of reproducibility and organization, the casTLE scripts work
-only within the provided directory structure. This can generally be overrriden
-using -or, which waives the requirement for record files, and -of, which waives
-automatic placement of files in certain folders.
+only within the provided directory structure. This can generally be overridden
+using -of, which waives automatic placement of files in certain folders.
 
 When running many of the scripts, they will create a record file *_record.txt,
 which contains a record of what parameters were used as well as provides downstream
 scripts with neccessary information. Because of this memory, most scripts will
-not work if a file is moved out of the directory system.
+not work if a result file is moved out of the directory system. Count files
+do not need a record file.
 
 Directory is as follows:
 Data - contains count files
 GenRef - contains gene descriptions, GO terms, and symbol/ID conversion info
-Indices - contains bowtie indexes for alignments
 Records - contains permanent record files for reproducibility's sake.
 Results - contains result and combo files
 Scripts - contains casTLE scripts.
+Scripts/Plot-Scripts - contains the plotting scripts.
 
 All analyses should be run from the top folder.
-python Scripts/*.py
+python3 Scripts/*.py
+python3 Scripts/Plot-Scripts/*.py
 
 
 ###############################################################################
@@ -146,7 +143,7 @@ Naming scheme: <name>_counts.csv
 Location: Stored in Data folder
 Format: Tab or comma delimited. First column element name, second column counts
 <element_name>,<count for element>
-Record: <name>_record.txt 
+Record: Not needed. Count files can come from any alignment pipeline.
 Example:
 0None_none_ACOC_204550.4501,252
 0None_none_ACOC_204552.4503,239
@@ -179,7 +176,8 @@ Location: Stored in Results folder
 Format: Comma delimited.
 Record: <name>_record.txt
 
-Each row represents a single gene.
+Each row represents a single gene. Rows are sorted by GeneID: numeric IDs in
+numeric order, then any genes not found in GenRef alphabetically.
 "GeneID", "Symbol", and "GeneInfo" identify the gene
 
 "Localization", "Process", and "Function" display the GO terms for that gene
@@ -210,7 +208,7 @@ Location: Stored in Results folder
 Format: Comma delimited.
 Record: <name>_record.txt
 
-Each row represents a single gene
+Each row represents a single gene, sorted by GeneID as in result files.
 "GeneID", "Symbol", and "GeneInfo" identify the gene
 
 "Localization", "Process", and "Function" display the GO terms for that gene
@@ -242,48 +240,45 @@ interval for the Combo casTLE effect size estimate
 ###############################################################################
 #
 
-Overview of alignment and count file creation
+Count files
 Overview of making result files from count files
 Overview of combination analysis
+Known issues
 
 ###############################################################################
-# Overview of alignment and count file creation
+# Count files
 
-1) Create a bowtie index using makeIndices.py. This will also let you name your
-screen type for future reference. To do this you need an oligo file containing
-the name and sequence of each element in your screen. This is a comma-delimited
-file with two columns: <element name>,<element sequence>. See count file
-overview for element naming schemes.
-
-2) Use makeCounts.py to create a count file from your fastq file. Each count
-file will correspond to a single condition.
-
-References to each bowtie index are stored in Indices/screen_type_index.txt
-in tab-delimited form. This allows both a quick reference name and a full
-descriptive name.
+casTLE starts from count files, one per condition, which you create with your
+own alignment pipeline. See the count file format above, including the
+element naming scheme. Place count files in the Data folder.
 
 
 ###############################################################################
 # Overview of making result files from count files
 
-Indicate two count files to compare using:
-python Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
-python Scripts/analyzeCounts.py Data/untreated_counts.csv Data/treated_counts.csv name
+1) Indicate two count files to compare using:
+python3 Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
+python3 Scripts/analyzeCounts.py Data/untreated_counts.csv Data/treated_counts.csv name
 A result file will be created at Results/<output results file>.
 
-Count files do not need a record file; the -ro flag is no longer required.
-You may need to indicate a negative control symbol or select a non-negative
-control background with -b:
-python Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
+Count files do not need a record file. The -ro flag, which the original
+scripts needed for count files without one, is accepted but no longer needed.
+You may need to indicate a negative control symbol, or select a background
+other than the negative controls with -b:
+python3 Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
     -n <negative symbol>
 or
-python Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
+python3 Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
     -b tar
+
+The background (-b) is the set of elements used to center enrichments and to
+model noise: neg uses negative controls only (default), tar uses targeting
+elements only, and all uses both.
 
 2) In order to calculate p-values from the casTLE score distrubution, the null
 distribution needs to be estimated by permutation. To this, run
-python Scripts/addPermutations.py <result file> <number of permutations>
-python Scripts/addPermutations.py Results/Test/result.csv 10000
+python3 Scripts/addPermutations.py <result file> <number of permutations>
+python3 Scripts/addPermutations.py Results/result.csv 10000
 
 This command will create an auxiliary ref file and replace your result file
 with one containing estimated p-values. Note that the p-value is an estimate
@@ -299,18 +294,37 @@ again. It will add to the existing number of permutations.
 combining two replicates of the same screen, or combining two disparate screening
 types, such as shRNA and CRISPR/Cas9. Use analyzeCombo.py to indicate two result
 files:
-python Scripts/analyzeCombo.py <result file 1> <result file 2> <output file>
+python3 Scripts/analyzeCombo.py <result file 1> <result file 2> <output file>
 This will create a combo file at Results/<output file>.
 
 2) To estimate p-values for combination results, use addCombo.py
-python Scripts/addCombo.py <combo file> <number of permutations>
+python3 Scripts/addCombo.py <combo file> <number of permutations>
+
+
+###############################################################################
+# Known issues
+
+These behaviors come from the original casTLE scripts. They are kept so that
+results stay identical to the original.
+
+Time zero files (-z): when reading each time zero file, the first 1024
+characters are used to detect the delimiter and are then skipped, so the
+elements on those first lines (often several dozen) get the default time
+zero value instead of their counts. If the cut falls in the middle of a
+count, the script can stop with an IndexError. When the same file is given
+as both time zero files, the error cancels out; with two different files,
+results are affected.
+
+Exclude (-x): despite its name, -x keeps only elements whose names contain
+one of the given strings. To keep negative controls, include their symbol.
 
 
 ###############################################################################
 # Available plotting scripts
 ###############################################################################
 
-In order to visualize your data, the available plotting scripts are:
+In order to visualize your data, the available plotting scripts in
+Scripts/Plot-Scripts are:
 plotDist.py
 plotVolcano.py
 plotGenes.py
@@ -322,7 +336,7 @@ plotRep.py
 # plotDist.py
 
 Plot distribution of elements from count file:
-python Scripts/plotDist.py <output name> <count file 1> <count file 2> ...
+python3 Scripts/Plot-Scripts/plotDist.py <output name> <count file 1> <count file 2> ...
 This will create an image at Results/<output name>
 
 This will allow the visualization of the diversity in the given count files.
@@ -334,14 +348,14 @@ Any number of count files can be used. Use -l to label samples.
 
 Example:
 
-python Scripts/plotDist.py test_dist Data/plasmid_counts.csv Data/untreated_counts.csv Data/treated_counts.csv -l Plasmid Untreated Treated
+python3 Scripts/Plot-Scripts/plotDist.py test_dist Data/plasmid_counts.csv Data/untreated_counts.csv Data/treated_counts.csv -l Plasmid Untreated Treated
 
 
 ###############################################################################
 # plotVolcano.py
 
 Creates a 2D histogram of effect by significance
-python Scripts/plotVolcano.py <results file>
+python3 Scripts/Plot-Scripts/plotVolcano.py <results file>
 
 Visualizes the results from a single result file. Individual points can be labeled
 with -n. Creates image at <results file>_volcano.*
@@ -349,14 +363,14 @@ Image type can be changed with -f.
 
 Example:
 
-python Scripts/plotVolcano.py Results/results.csv -n MTOR MYC -f eps
+python3 Scripts/Plot-Scripts/plotVolcano.py Results/results.csv -n MTOR MYC -f eps
 
 
 ###############################################################################
 # plotGenes.py
 
 Plot individual gene results from casTLE result file:
-python Scripts/plotGenes.py <results file> <gene name 1> <gene name 2> ...
+python3 Scripts/Plot-Scripts/plotGenes.py <results file> <gene name 1> <gene name 2> ...
 
 Create cloud and hist plots for individual genes from a given result file.
 Cloud plots show data as raw counts with negative controls as reference.
@@ -366,30 +380,30 @@ Created files are placed at <results file>_<gene name>_*
 
 Example:
 
-python Scripts/plotGenes.py Results/results.csv MTOR MYC
+python3 Scripts/Plot-Scripts/plotGenes.py Results/results.csv MTOR MYC
 
 
 ###############################################################################
 # plotElements.py
 
 Compare enrichment of individual elements between multiple result files:
-python Scripts/plotElements.py <results file 1> <results file 2> <output name>
+python3 Scripts/Plot-Scripts/plotElements.py <results file 1> <results file 2> <output name>
 
 Example:
-python Scripts/plotElements.py Results/replicate1.csv Results/replicate2.csv rep_rep1_rep2
+python3 Scripts/Plot-Scripts/plotElements.py Results/replicate1.csv Results/replicate2.csv rep_rep1_rep2
 
 
 ###############################################################################
 # plotRep.py
 
 Compare effect size and confidence between multiple result files:
-python Scripts/plotRep.py <results file 1> <results file 2> <output name>
+python3 Scripts/Plot-Scripts/plotRep.py <results file 1> <results file 2> <output name>
 
 This allows you to compare two result files, visualizing reproducibility or
 lack thereof.
 
 Example:
-python Scripts/plotRep.py Results/replicate1.csv Results/replicate2.csv rep_rep1_rep2
+python3 Scripts/Plot-Scripts/plotRep.py Results/replicate1.csv Results/replicate2.csv rep_rep1_rep2
 
 
 ###############################################################################
