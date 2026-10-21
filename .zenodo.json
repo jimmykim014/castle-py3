@@ -1,0 +1,42 @@
+{
+  "title": "castle-py3: casTLE for Python 3",
+  "upload_type": "software",
+  "description": "<p>castle-py3 is a Python 3 port of casTLE (Cas9 high-Throughput maximum Likelihood Estimator) version 1.0, by David W Morgens, for analyzing pooled CRISPR and shRNA screens. It gives the same results as the original Python 2 scripts; the only change to output files is that genes are listed from highest to lowest casTLE score.</p><p>If you use casTLE, please also cite: Morgens DW, Deans RM, Li A, Bassik MC (2016) Systematic comparison of CRISPR/Cas9 and RNAi screens for essential genes. Nat Biotechnol 34:634-636.</p>",
+  "creators": [
+    {
+      "name": "Kim, Jimmy",
+      "orcid": "0009-0004-3549-524X"
+    },
+    {
+      "name": "Morgens, David W"
+    }
+  ],
+  "license": "bsd-2-clause",
+  "keywords": [
+    "CRISPR",
+    "RNAi",
+    "shRNA",
+    "genetic screens",
+    "casTLE",
+    "maximum likelihood",
+    "bioinformatics",
+    "Python 3"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/jimmykim014/castle-py3",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/elifesciences-publications/dmorgens-castle",
+      "relation": "isDerivedFrom",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.1038/nbt.3567",
+      "relation": "references",
+      "scheme": "doi"
+    }
+  ]
+}
