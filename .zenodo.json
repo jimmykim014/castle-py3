@@ -1,7 +1,7 @@
 {
   "title": "castle-py3: casTLE for Python 3",
   "upload_type": "software",
-  "description": "<p>castle-py3 is a Python 3 port of casTLE (Cas9 high-Throughput maximum Likelihood Estimator) version 1.0, by David W Morgens, for analyzing pooled CRISPR and shRNA screens. It gives the same results as the original Python 2 scripts; the only change to output files is that genes are listed from highest to lowest casTLE score.</p><p>If you use casTLE, please also cite: Morgens DW, Deans RM, Li A, Bassik MC (2016) Systematic comparison of CRISPR/Cas9 and RNAi screens for essential genes. Nat Biotechnol 34:634-636.</p>",
+  "description": "<p>castle-py3 is a Python 3 port of casTLE (Cas9 high-Throughput maximum Likelihood Estimator) version 1.0, by David W Morgens, for analyzing pooled CRISPR and shRNA screens. It gives the same results as the original Python 2 scripts; the only change to output files is that genes are listed from highest to lowest casTLE score.</p><p>If you use casTLE, please also cite: Morgens DW, Deans RM, Li A, Bassik MC (2016) Systematic comparison of CRISPR/Cas9 and RNAi screens for essential genes. Nat Biotechnol 34:634-636.</p><p>For a protocol covering how to generate count files, see: Kim J, Kovacs H, Wisnovsky S (2026) CRISPR screens to identify and characterize ligands for glycan-binding proteins. Methods Enzymol. 219-263. https://doi.org/10.1016/bs.mie.2026.03.005</p>",
   "creators": [
     {
       "name": "Kim, Jimmy",
@@ -36,6 +36,11 @@
     {
       "identifier": "10.1038/nbt.3567",
       "relation": "references",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.1016/bs.mie.2026.03.005",
+      "relation": "isDocumentedBy",
       "scheme": "doi"
     }
   ]
