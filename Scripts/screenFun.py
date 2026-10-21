@@ -1132,7 +1132,9 @@ def precalculateGrid(gene_span, back_rhos, scale):
     grid = range(min_all, max_all)
 
     back_dist_scaled = [rho * magnitude for rho in back_rhos]
-    back_dist = scipy.stats.gaussian_kde(back_dist_scaled)
+    # Suppresses spurious vecdot RuntimeWarnings from newer scipy/numpy on macOS
+    with np.errstate(divide='ignore', over='ignore', invalid='ignore'):
+        back_dist = scipy.stats.gaussian_kde(back_dist_scaled)
 
     back_rhos_calc = {}
     # Parameter to prevent underflow, may effect outlier tolerance
