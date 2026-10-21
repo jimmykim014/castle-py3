@@ -14,6 +14,9 @@ import sys
 from collections import defaultdict
 import time
 import argparse
+import os
+# screenFun.py lives in the Scripts folder one level up
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
 from screenFun import *
 
 
@@ -126,9 +129,9 @@ untreated, treated, stats, time_zero = filterCounts(unt_file,
 print('Calculating enrichment values')
     
 element_rhos, gene_rhos, neg_rhos, tar_rhos, gene_ref = enrich_all(untreated,
-		treated, neg_name, split_mark, K, time_zero, back)
+                treated, neg_name, split_mark, K, time_zero, back)
 
-for gene, ref in gene_ref.items():
+for gene, ref in list(gene_ref.items()):
 
     geneID, name, entrez = retrieveIDs(gene, geneID2Name, geneName2ID, geneEns2Name)
 
@@ -186,14 +189,14 @@ gene2effect = {}
 with open(args.res_file, 'r') as res_open:
 
     res_csv = csv.reader(res_open, delimiter=',', lineterminator = '\n')
-    header = res_csv.next()
+    header = next(res_csv)
 
     for line in res_csv:
 
         effect = float(line[args.effect_col])
         gene2effect[line[0]] = effect
 
-for gene, effect in gene2effect.items():
+for gene, effect in list(gene2effect.items()):
 
     geneID, name, entrez = retrieveIDs(gene, geneID2Name, geneName2ID, geneEns2Name)
 
