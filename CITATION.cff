@@ -1,0 +1,54 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it as below, and also cite
+  Morgens et al. (2016), listed under references.
+title: "castle-py3: casTLE for Python 3"
+type: software
+authors:
+  - family-names: Kim
+    given-names: Jimmy
+    orcid: "https://orcid.org/0009-0004-3549-524X"
+  - family-names: Morgens
+    given-names: David W.
+repository-code: "https://github.com/jimmykim014/castle-py3"
+license: BSD-2-Clause
+abstract: >-
+  castle-py3 is a Python 3 port of casTLE (Cas9 high-Throughput maximum
+  Likelihood Estimator) version 1.0, by David W Morgens, for analyzing
+  pooled CRISPR and shRNA screens. It gives the same results as the
+  original Python 2 scripts; the only change to output files is that
+  genes are listed from highest to lowest casTLE score.
+keywords:
+  - CRISPR
+  - RNAi
+  - shRNA
+  - genetic screens
+  - casTLE
+  - maximum likelihood
+  - bioinformatics
+  - Python 3
+references:
+  - type: article
+    title: "Systematic comparison of CRISPR/Cas9 and RNAi screens for essential genes"
+    authors:
+      - family-names: Morgens
+        given-names: David W.
+      - family-names: Deans
+        given-names: Richard M.
+      - family-names: Li
+        given-names: Amy
+      - family-names: Bassik
+        given-names: Michael C.
+    journal: Nature Biotechnology
+    year: 2016
+    volume: 34
+    start: 634
+    end: 636
+    doi: 10.1038/nbt.3567
+  - type: software
+    title: casTLE
+    authors:
+      - family-names: Morgens
+        given-names: David W.
+    version: "1.0"
+    repository-code: "https://github.com/elifesciences-publications/dmorgens-castle"
