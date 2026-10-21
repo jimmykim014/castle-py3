@@ -15,7 +15,7 @@ import math
 import csv
 from collections import defaultdict
 import os
-import scipy.misc
+import scipy.special
 import scipy.stats as st
 import scipy.stats
 import sys
@@ -576,7 +576,7 @@ def likeGrid(rhos, I, hit_rate, back_dist):
 def findInterval(log_data, target, step):
 
     # Calculates likelihood fractions for interval calculation
-    norm_log_data = log_data - scipy.misc.logsumexp(log_data[~numpy.isnan(log_data)])
+    norm_log_data = log_data - scipy.special.logsumexp(log_data[~numpy.isnan(log_data)])
     data = numpy.exp(norm_log_data)
 
     # Sanity check
@@ -705,7 +705,7 @@ def trial(gene_rhos, back_dist, gene_span, step):
             all_dist[I] = dist
 
 	    # Performs marginalization in log scale for stability
-            marg_log = scipy.misc.logsumexp(dist) - math.log(len(dist))
+            marg_log = scipy.special.logsumexp(dist) - math.log(len(dist))
             marg_logs[I - min_I + buff_zero] = marg_log
 
 	# Grid search across the negative values
@@ -727,7 +727,7 @@ def trial(gene_rhos, back_dist, gene_span, step):
             all_dist[I] = dist
 
 	    # Performs marginalization in log scale for stability
-            marg_log = scipy.misc.logsumexp(dist) - math.log(len(dist))
+            marg_log = scipy.special.logsumexp(dist) - math.log(len(dist))
             marg_logs[I - min_I + buff_zero] = marg_log
 
         total_weight, min_ind, max_ind = findInterval(marg_logs, 0.95, step)
@@ -784,7 +784,7 @@ def retrieveLikelihoods(gene_rhos, back_rhos, nums, gene_span, scale, I_step):
         # Initiates parallel server
         job_server = pp.Server(nums)
         fn = pp.Template(job_server, trial, (likeGrid, findInterval,),
-                ("numpy", "math", "scipy.misc"))
+                ("numpy", "math", "scipy.special"))
 
     # Single core version
     if single:
@@ -953,7 +953,7 @@ def retrieveCombo(data1, data2, gene_span, I_step):
 
                     dist.append(like1 + like2)
 
-            marg_log = scipy.misc.logsumexp(dist) - math.log(len(dist))
+            marg_log = scipy.special.logsumexp(dist) - math.log(len(dist))
             marg_logs.append(marg_log)
 
 	# Retrieves the 95% confidence interval
