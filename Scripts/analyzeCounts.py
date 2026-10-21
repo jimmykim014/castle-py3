@@ -88,8 +88,9 @@ parser.add_argument('-of', '--override_file', action='store_true',
 parser.add_argument('-m', '--mouse', action='store_true',
                 help='Uses mouse gene information.')
 
-parser.add_argument('-ro', '--record', action='store_false',
-                help='Allows script to run without record of count files.')
+parser.add_argument('-ro', '--record', action='store_false', default=False,
+                help='No longer needed; count file records are never checked. '
+                + 'Kept so existing commands still work.')
 
 # Saves all input to object args
 args = parser.parse_args()
@@ -163,8 +164,6 @@ if args.record:
         sys.exit('Screen types do not match.')
 
 else:
-
-    print('Warning: Record file overriden by -ro flag')
 
     unt_version = 'Overridden'
     unt_time1 = 'Overridden'

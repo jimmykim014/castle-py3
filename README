@@ -271,16 +271,14 @@ python Scripts/analyzeCounts.py <count file 1> <count file 2> <output results fi
 python Scripts/analyzeCounts.py Data/untreated_counts.csv Data/treated_counts.csv name
 A result file will be created at Results/<output results file>.
 
-If using count files not created by makeCounts.py. You will need to override
-the search for a record file. To do this you will also need to indicate a 
-negative control symbol or select a non-negative control background with -b:
-python Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file> 
+Count files do not need a record file; the -ro flag is no longer required.
+You may need to indicate a negative control symbol or select a non-negative
+control background with -b:
+python Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
     -n <negative symbol>
-    -ro
 or
-python Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file> 
+python Scripts/analyzeCounts.py <count file 1> <count file 2> <output results file>
     -b tar
-    -ro
 
 2) In order to calculate p-values from the casTLE score distrubution, the null
 distribution needs to be estimated by permutation. To this, run
