@@ -46,11 +46,18 @@ This repository (castle-py3) is a Python 3 port of casTLE version 1.0. It
 gives the same results as the original Python 2 scripts; the only change to
 output files is that genes are listed from highest to lowest casTLE score. It
 works on count files you provide, so the alignment scripts (makeCounts.py,
-makeIndices.py) and bowtie indices of the original are not included.
+makeIndices.py) and bowtie indices of the original are not included. For a
+protocol covering how to generate count files from sequencing data, see
+Kim et al. (2026) below.
 
 If you use these scripts please cite:
 Morgens DW, Deans RM, Li A, Bassik MC (2016) Systematic comparison of
 CRISPR/Cas9 and RNAi screens for essential genes. Nat. Biotechnol. advance on
+
+For generating count files, see:
+Kim J, Kovacs H, Wisnovsky S (2026) CRISPR screens to identify and
+characterize ligands for glycan-binding proteins. Methods Enzymol. 219-263.
+https://doi.org/10.1016/bs.mie.2026.03.005
 
 ###############################################################################
 # Requirements
@@ -262,6 +269,10 @@ Known issues
 casTLE starts from count files, one per condition, which you create with your
 own alignment pipeline. See the count file format above, including the
 element naming scheme. Place count files in the Data folder.
+
+For a protocol covering how to generate count files from sequencing data, see
+Kim J, Kovacs H, Wisnovsky S (2026) Methods Enzymol. 219-263.
+https://doi.org/10.1016/bs.mie.2026.03.005
 
 
 ###############################################################################

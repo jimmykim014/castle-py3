@@ -45,6 +45,25 @@ references:
     start: 634
     end: 636
     doi: 10.1038/nbt.3567
+  - type: book
+    title: "CRISPR screens to identify and characterize ligands for glycan-binding proteins"
+    abstract: Protocol including how to generate count files for casTLE.
+    authors:
+      - family-names: Kim
+        given-names: Jimmy
+        orcid: "https://orcid.org/0009-0004-3549-524X"
+      - family-names: Kovacs
+        given-names: Halen
+      - family-names: Wisnovsky
+        given-names: Simon
+    collection-title: Methods in Enzymology
+    publisher:
+      name: Elsevier
+    year: 2026
+    start: 219
+    end: 263
+    isbn: "9780443432262"
+    doi: 10.1016/bs.mie.2026.03.005
   - type: software
     title: casTLE
     authors:
