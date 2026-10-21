@@ -15,6 +15,9 @@ import csv
 import sys
 from collections import defaultdict
 import argparse
+import os
+# screenFun.py lives in the Scripts folder one level up
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
 from screenFun import *
 import warnings
 import math
@@ -138,10 +141,10 @@ print('Calculating enrichment values')
 
 # Retrieves enrichment values from auxilary function
 element_rhos1, gene_rhos1, neg_rhos1, tar_rhos1, gene_ref1 = enrich_all(untreated1,
-		treated1, neg_name1, split_mark1, K1, time_zero1, back1)
+                treated1, neg_name1, split_mark1, K1, time_zero1, back1)
 
 element_rhos2, gene_rhos2, neg_rhos2, tar_rhos2, gene_ref2 = enrich_all(untreated2,
-		treated2, neg_name2, split_mark2, K2, time_zero2, back2)
+                treated2, neg_name2, split_mark2, K2, time_zero2, back2)
 
 
 ###############################################################################
@@ -173,7 +176,7 @@ if args.line:
 
 # Adds title
 if args.title:
-    plt.title('Reproducibility of enrichment by element; R2 = ' + str(round(r_value ** 2, 2)))
+    plt.title('Reproducibility of enrichment by element; R2 = ' + str(roundHalfAway(r_value ** 2, 2)))
 
 plt.savefig(file_out + '_rho.' + args.file_type)
 plt.close()

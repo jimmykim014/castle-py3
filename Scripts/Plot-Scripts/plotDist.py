@@ -14,10 +14,12 @@ import csv
 import sys
 from collections import defaultdict
 import argparse
+import os
+# screenFun.py lives in the Scripts folder one level up
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
 from screenFun import *
 import warnings
 import math
-import os
 
 
 ###############################################################################    
@@ -151,7 +153,7 @@ for count_file in args.count_files:
     entropies.append(entropy)
 
 # Finds the total number of elements and normalizes entropies to this value
-tot_elements = max(map(len, norms))
+tot_elements = max([len(norm) for norm in norms])
 norm_entropies = [ent / math.log(tot_elements, 2) for ent in entropies]
 
 print('Total elements: ' + str(tot_elements))

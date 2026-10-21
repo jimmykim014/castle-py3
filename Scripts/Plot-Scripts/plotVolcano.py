@@ -15,6 +15,9 @@ import csv
 import sys
 from collections import defaultdict
 import argparse
+import os
+# screenFun.py lives in the Scripts folder one level up
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
 from screenFun import *
 import warnings
 import math
@@ -124,7 +127,7 @@ if not args.record:
 
         with open(rec_file, 'r') as rec_open:
             rec_csv = csv.reader(rec_open, delimiter='\t')
-            script, version = rec_csv.next()
+            script, version = next(rec_csv)
 
             if version != current_version:
                 sys.exit('Version number not current\n'
@@ -186,7 +189,7 @@ gene2effect_rat = {}
 with open(args.res_file, 'r') as res_open:
 
     res_csv = csv.reader(res_open, delimiter=',', lineterminator='\n')
-    res_csv.next()
+    next(res_csv)
 
     for line in res_csv:
         gene = line[args.gene_col].upper()
@@ -276,7 +279,7 @@ if args.xlim:
 if args.names:
     for name, gene in gene_labels:
         effect, rat = gene2effect_rat[gene]
-	plt.text(effect, rat, name)
+        plt.text(effect, rat, name)
         plt.plot(effect, rat, '.', color='b', markersize=10, markeredgewidth=0)
 
 if args.thresh:
