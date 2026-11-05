@@ -16,13 +16,13 @@ Version 0.7 used in Morgens et al. (2016) "Systematic comparison of CRISPR/Cas9
 and RNAi screens for essential genes." Nat Biotechnol 34:634-636. Implementation
 has changed but results should be identical.
 
-This repository (castle-py3) is a Python 3 port of casTLE version 1.0. It
-gives the same results as the original Python 2 scripts; the only change to
-output files is that genes are listed from highest to lowest casTLE score. It
-works on count files you provide, so the alignment scripts (makeCounts.py,
-makeIndices.py) and bowtie indices of the original are not included. For a
-protocol covering how to generate count files from sequencing data, see
-Kim et al. (2026) below.
+This repository (castle-py3, version 1.1.0) is a Python 3 port of casTLE
+version 1.0. It gives the same results as the original Python 2 scripts; the
+only change to output files is that genes are listed from highest to lowest
+casTLE score. It works on count files you provide, so the alignment scripts
+(makeCounts.py, makeIndices.py) and bowtie indices of the original are not
+included. For a protocol covering how to generate count files from sequencing
+data, see Kim et al. (2026) below.
 
 ### Citation
 
@@ -34,7 +34,7 @@ If you use these scripts please cite:
 
 and this Python 3 version:
 
-> Kim J, Morgens DW (2026) castle-py3: casTLE for Python 3. Zenodo.
+> Kim J (2026) castle-py3: casTLE for Python 3. Zenodo.
 > https://doi.org/10.5281/zenodo.23548289
 
 For generating count files, see:
