@@ -16,7 +16,7 @@ Version 0.7 used in Morgens et al. (2016) "Systematic comparison of CRISPR/Cas9
 and RNAi screens for essential genes." Nat Biotechnol 34:634-636. Implementation
 has changed but results should be identical.
 
-This repository (castle-py3, version 1.1.0) is a Python 3 port of casTLE
+This repository (castle-py3, version 1.1.1) is a Python 3 port of casTLE
 version 1.0. It gives the same results as the original Python 2 scripts; the
 only change to output files is that genes are listed from highest to lowest
 casTLE score. It works on count files you provide, so the alignment scripts
