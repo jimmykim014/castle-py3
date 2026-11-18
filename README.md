@@ -46,8 +46,8 @@ For generating count files, see:
 
 ## Requirements
 
-Scripts require Python 3. They are tested with Python 3.12, numpy 2.2,
-scipy 1.18 and matplotlib 3.10, and no longer run on Python 2.
+Scripts require Python 3. They are tested with Python 3.12, numpy 2.2 to 2.5,
+scipy 1.18 and matplotlib 3.10 to 3.11, and no longer run on Python 2.
 
 Required packages: numpy, scipy, matplotlib (matplotlib is only needed for the
 plotting scripts). Everything else used is part of the Python standard library.

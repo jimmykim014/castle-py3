@@ -1142,7 +1142,9 @@ def precalculateGrid(gene_span, back_rhos, scale):
 
     for point in grid:
 
-        back = back_dist(point)
+        # gaussian_kde returns a length-1 array; takes the scalar since newer
+        # numpy no longer converts 1-element arrays to Python floats
+        back = back_dist(point)[0]
         back_rhos_calc[point] = back + underflow
 
     return back_rhos_calc
