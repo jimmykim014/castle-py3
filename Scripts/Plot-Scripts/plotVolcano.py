@@ -261,6 +261,9 @@ plt.figure(dpi=400)
 
 if args.hist:
     plt.hist2d(x, y, 100, cmap=cm.jet, norm=LogNorm())
+    # Keeps axes at the histogram edges, as matplotlib < 3.11 did
+    plt.xlim(plt.xlim())
+    plt.ylim(plt.ylim())
 
 else:
     plt.plot(x, y, '.', color='0', alpha=0.25, markersize=10, markeredgewidth=0)

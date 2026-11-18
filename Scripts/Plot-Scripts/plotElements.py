@@ -166,6 +166,9 @@ slope, intercept, r_value, p_value, std_err = st.linregress(x,y)
 
 plt.figure()
 plt.hist2d(x, y, (100, 100), cmap=cm.jet, norm=LogNorm())
+# Keeps axes at the histogram edges, as matplotlib < 3.11 did
+plt.xlim(plt.xlim())
+plt.ylim(plt.ylim())
 plt.xlabel('Enrichment for ' + args.x_axis)
 plt.ylabel('Enrichment for ' + args.y_axis)
 
